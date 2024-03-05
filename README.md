@@ -93,85 +93,13 @@ For clarity, class inheritance and unused data properties are excluded, and only
 The following class diagram shows the LogisticsObject data classes used and their relationships to the LogisticsEvent data class in the context of ShipmentTracking.
 
 ```mermaid
-    classDiagram
+sequenceDiagram
 Carrier->>Trucker: SUB on virtual location "FRA LH Cargo Export Acceptance"
 activate Carrier
 Trucker->>Carrier: PUB New link added to location "FRA LH Cargo Export Acceptance"
-
+deactivate Carrier
 ```
 
-The following class diagram visualizes the LogisticsEvent data class:
-
-```mermaid
-    classDiagram
-
-    direction LR   
-    
-    class Location {
-    
-    }
-
-    class LogisticsObject {
-        + events: LogisticsEvent [0..*]
-    }
-    LogisticsObject "1" --> "0..*" LogisticsEvent: events
-    
-    class LogisticsEvent {
-      + creationDate: xsd:dateTime
-      + eventCode: CodeListElement
-      + eventDate: xsd:dateTime
-      + eventFor: LogisticsObject
-      + eventTimeType: EventTimeType
-      + partialEventIndicator: xsd:boolean [0..1]
-      + recordedAtLocation: Location
-      + recordedBy: Organization      
-    }
-
-    LogisticsEvent "1" --> "1" StatusCode: eventCode
-    LogisticsEvent "1" --> "1" LogisticsObject : eventFor          
-    LogisticsEvent "1" --> "1" EventTimeType : eventTimeType          
-    LogisticsEvent "1" --> "1" Location : recordedAtLocation          
-    LogisticsEvent "1" --> "1" Organization : recordedBy          
-
-    class Organization {
-      + name: xsd:string      
-    }
-
-    class EventTimeType {
-        <<Enumeration>>
-        ACTUAL
-        PLANNED
-    }
-      
-      class StatusCode {
-        <<Enumeration>>
-        StatusCode_ARR
-        StatusCode_BKD
-        StatusCode_DEP
-        StatusCode_DIS_DFLD
-        StatusCode_DIS_FDAV
-        StatusCode_DIS_FDAW
-        StatusCode_DIS_FDCA
-        StatusCode_DIS_FDMB
-        StatusCode_DIS_MSAV
-        StatusCode_DIS_MSAW
-        StatusCode_DIS_MSCA
-        StatusCode_DIS_MSMB
-        StatusCode_DIS_OFLD
-        StatusCode_DIS_OVCD
-        StatusCode_DIS_SSPD
-        StatusCode_DLV
-        StatusCode_FIW
-        StatusCode_FOH
-        StatusCode_FOW
-        StatusCode_MAN
-        StatusCode_NFD
-        StatusCode_PRE
-        StatusCode_RCF
-        StatusCode_RCS
-        ...        
-    }
-```
 
 ### Data Mapping
 
