@@ -93,6 +93,7 @@ For clarity, class inheritance and unused data properties are excluded, and only
 The following class diagram shows the LogisticsObject data classes used and their relationships to the LogisticsEvent data class in the context of ShipmentTracking.
 
 ```mermaid
+sequenceDiagram
     participant Shipper TMS
     participant Shipper ONE Record Server
     participant GHA ONE Record Server
