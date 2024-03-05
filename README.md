@@ -93,13 +93,15 @@ For clarity, class inheritance and unused data properties are excluded, and only
 The following class diagram shows the LogisticsObject data classes used and their relationships to the LogisticsEvent data class in the context of ShipmentTracking.
 
 ```mermaid
-sequenceDiagram
-participant Trucker
-participant Carrier
-Trucker->>Carrier: SUB on virtual location "FRA LH Cargo Export Acceptance"
-activate Carrier
-Trucker->>Carrier: PUB New link added to location "FRA LH Cargo Export Acceptance"
-deactivate Carrier
+    participant Shipper TMS
+    participant Shipper ONE Record Server
+    participant GHA ONE Record Server
+    participant GHA TMS
+    GHA ONE Record Server->>+Shipper ONE Record Server: SUB on location "LH Export acceptance FRA"
+    Shipper TMS->>+Shipper ONE Record Server: Creates a TransportMovement with destination location "LH Export acceptance FRA"
+    Shipper ONE Record Server->>+GHA ONE Record Server: PUB notification for creation of transport movement with destination location "LH Export acceptance FRA"
+    GHA ONE Record Server->>+ Shipper ONE Record Server: GET Transport Movement
+    Shipper ONE Record Server->>+ GHA ONE Record Server: Provides JSONS Response    
 ```
 
 
