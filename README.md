@@ -94,9 +94,9 @@ The following class diagram shows the LogisticsObject data classes used and thei
 
 ```mermaid
 sequenceDiagram
-Trucker<<-Carrier: SUB on virtual location "FRA LH Cargo Export Acceptance"
+Trucker->>Carrier: SUB on virtual location "FRA LH Cargo Export Acceptance"
 activate Carrier
-Carrier->>Trucker: PUB New link added to location "FRA LH Cargo Export Acceptance"
+Trucker->>Carrier: PUB New link added to location "FRA LH Cargo Export Acceptance"
 deactivate Carrier
 ```
 
