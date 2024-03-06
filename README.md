@@ -111,10 +111,8 @@ sequenceDiagram
     deactivate Trucker ONE Record Server
     activate GHA TMS
         GHA ONE Record Server->>+GHA TMS: POSTS QDO-Request
-        GHA TMS->>+GHA ONE Record Server: Provides QDO-Code for location 1
-        GHA TMS->>+GHA ONE Record Server: Creates transportMovement 1 for location 1
-        GHA TMS->>+GHA ONE Record Server: Provides QDO-Code for location n
-        GHA TMS->>+GHA ONE Record Server: Creates transportMovement n for location n
+        GHA TMS->>+GHA ONE Record Server: Creates transportMovement 1 for location 1 (incl. QDO-Code)
+        GHA TMS->>+GHA ONE Record Server: Creates transportMovement n for location n (incl. QDO-Code)
     deactivate GHA TMS
     GHA ONE Record Server->>+ Trucker ONE Record Server: PATCH transportMovement 1 into pieces
     note over GHA ONE Record Server: includes LOs: loading, transportMovement
