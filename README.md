@@ -94,15 +94,34 @@ The following class diagram shows the LogisticsObject data classes used and thei
 
 ```mermaid
 sequenceDiagram
-    participant Shipper TMS
-    participant Shipper ONE Record Server
+    participant Trucker TMS
+    participant Trucker ONE Record Server
     participant GHA ONE Record Server
     participant GHA TMS
-    GHA ONE Record Server->>+Shipper ONE Record Server: SUB on location "LH Export acceptance FRA"
-    Shipper TMS->>+Shipper ONE Record Server: Creates a TransportMovement with destination location "LH Export acceptance FRA"
-    Shipper ONE Record Server->>+GHA ONE Record Server: PUB notification for creation of transport movement with destination location "LH Export acceptance FRA"
-    GHA ONE Record Server->>+ Shipper ONE Record Server: GET Transport Movement
-    Shipper ONE Record Server->>+ GHA ONE Record Server: Provides JSONS Response    
+    autonumber
+    Trucker TMS->>+Trucker ONE Record Server: Creat location "Export acceptance"
+    GHA ONE Record Server->>+Trucker ONE Record Server: SUB on location "Export acceptance"
+    note over Trucker ONE Record Server, GHA ONE Record Server: specific part per TruckPreAdvice below
+    Trucker TMS->>+Trucker ONE Record Server: Creates a transportMovement with destination location "Export acceptance"
+    Trucker ONE Record Server->>+GHA ONE Record Server: PUB notification for creation of transportMovement with destination location "Export acceptance"
+    activate Trucker ONE Record Server
+        GHA ONE Record Server->>+ Trucker ONE Record Server: GET transportMovement
+        Trucker ONE Record Server->>+ GHA ONE Record Server: Provides transportMovement
+        note over GHA ONE Record Server: includes LOs: loading, pieces, shipment, waybill, transportMeans, transportMeansOperator, externalReference
+    deactivate Trucker ONE Record Server
+    activate GHA TMS
+        GHA ONE Record Server->>+GHA TMS: POSTS QDO-Request
+        GHA TMS->>+GHA ONE Record Server: Provides QDO-Code for location 1
+        GHA TMS->>+GHA ONE Record Server: Creates transportMovement 1 for location 1
+        GHA TMS->>+GHA ONE Record Server: Provides QDO-Code for location n
+        GHA TMS->>+GHA ONE Record Server: Creates transportMovement n for location n
+    deactivate GHA TMS
+    GHA ONE Record Server->>+ Trucker ONE Record Server: PATCH transportMovement 1 into pieces
+    note over GHA ONE Record Server: includes LOs: loading, transportMovement
+    GHA ONE Record Server->>+ Trucker ONE Record Server: PATCH transportMovement 2 into pieces
+    note over GHA ONE Record Server: includes LOs: loading, transportMovement
+    Trucker ONE Record Server ->>+Trucker TMS: Provide assigned arrivalLocation to driver (= ramp)
+
 ```
 
 
