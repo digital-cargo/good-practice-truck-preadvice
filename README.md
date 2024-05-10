@@ -44,8 +44,6 @@ As the industry evolves, it is imperative for stakeholders to keep up to date on
 **Target audience**
 
 This document is intended for anyone interested in this topic. 
-Thus, `shipment` is defined as pieces under one contract and is not limited to the Air Waybill (AWB), which is used particularly in air freight. 
-Since ONE Record aims at multimodality, this good practice should also be applicable to transport modes other than air transport.
 
 **Geographical coverage**
 
@@ -119,8 +117,6 @@ sequenceDiagram
     GHA ONE Record Server->>+ Trucker ONE Record Server: PATCH transportMovement 2 into pieces
     note over GHA ONE Record Server: via loading
     Trucker ONE Record Server ->>+Trucker TMS: Provide assigned arrivalLocation to driver (= ramp)
-
-
 ```
 
 
