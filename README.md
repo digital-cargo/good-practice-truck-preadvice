@@ -53,9 +53,24 @@ As a result, companies of any size, at any location, can take advantage of the s
 
 ### Variants
 
-No relevant here.
+No relevant variants known.
 
 ## Background
+
+### Business Process
+
+The business process for this use case is quite simple. A trucker provides the truck and driver information plus the shipments on a truck, a GHA retrieves this information and shares dock assignments. This process is very general and can cover export e.g. acceptance at GHA, import pickups at GHA, incoming Road Feed Service, Forwarder´s pick up at Shipper. Principally, it can be used wherever the information of a transport using a TransportMeans (e.g. truck, train, AGV) is to be shared.
+
+To examplify the use case, the following setting was assumed: 
+
+- A Trucker wants to preAdvice
+
+data was shared
+
+Trucker
+
+
+For this specific use case, the following information is 
 
 ### ONE Record Standard
 
@@ -119,30 +134,44 @@ sequenceDiagram
     Trucker ONE Record Server ->>+Trucker TMS: Provide assigned arrivalLocation to driver (= ramp)
 ```
 
-
 ### Data Mapping
 
-This section covers modelling and usage of classes and data elements from ONE Record data model, in particular the modelling of shipment status (also referred to as milestone or event) information 
-on shipment-level and on piece-level, and considering specific scenarios, such as split shipments - shipments handled or moved in different parts - and transit shipments.
-
-Other than ONE Record, the data structure supported and used by a Transport Management System (TMS) and other applications 
-involved in ShipmentTracking related data exchange might not (yet) support the piece centric concept. Moreover, 
-there is usually no dedicated distinction between physical, contractual and other categories the data is related to. 
-
-This also applies to traditional messaging standards such as Cargo-IMP, Cargo-XML, internal web services, etc.
-Especially during the transition period it might therefore be required to convert data between 1R standard and other 
-data formats and data structures.
-
-For this purpose, the target data format and guidelines for mapping between the different data formats must be jointly defined and applied.
-
-Apart from the need of defining one dimensional mapping rules between the concerned data elements, general directions.
-of how to organize transferring data between those different structures must be defined.
+As there is no standardized solution in place, a mapping with existing standards is not done. 
 
 ### Implementation Guidelines
 
-This section outlines mandatory and best practice guidelines for the ShipmentTracking use case in accordance with the ONE Record standard. 
+This section outlines mandatory and best practice guidelines for the TruckPreAdvice use case in accordance with the ONE Record standard. 
 For every data class and property, compliance requires adherence to certain guidelines marked as MUST, while it is RECOMMENDED to follow others for best practices. 
 Additionally, to facilitate comprehension, practical data examples are included to demonstrate the implementation of these guidelines.
+
+**TransportMovement**
+
+- For ShipmentTracking, every TransportMovement MUST have a [transportIdentifier](https://onerecord.iata.org/ns/cargo#transportIdentifier) property with the following structure:
+`{carrier code in capital letters as two 2-digit code}{flight number 3-digit to 5-digit}{optional suffix}/{departure date as DDMMMyyyy}` or as regular expression:
+`([A-Z]{2}|[A-Z\d]{2})\d{3-5}[A-Z]?\/\d{2}[A-Z]{3}\d{4}`. Examples: LH100S/16OCT2023, S72510/02NOV2023
+- [arrivalLocation](https://onerecord.iata.org/ns/cargo#arrivalLocation) property MUST be a link to a Location data object
+- [departureLocation](https://onerecord.iata.org/ns/cargo#departureLocation) property MUST be a link to a Location data object
+
+```json
+{
+    "@context": {
+        "@vocab": "https://onerecord.iata.org/ns/cargo#"
+    },
+    "@id": "https://1r.example.com/logistics-objects/bfcae0d4-9a29-4e60-880d-213aac434776",
+    "@type": "TransportMovement",
+    "actions": {
+        "@id": "https://1r.example.com/logistics-objects/5a4ade17-fe91-4d0c-bb79-8685a99d5634"
+    },
+    "arrivalLocation": {
+        "@id": "https://1r.example.com/logistics-objects/JFK"
+    },
+    "departureLocation": {
+        "@id": "https://1r.example.com/logistics-objects/FRA"
+    },
+    "transportIdentifier": "LH400/16OCT2023"
+}
+```
+([transport-movement-LH400.json](./assets/transport-movement-LH400.json))
 
 **Location**
 
@@ -282,34 +311,6 @@ See [UUID Version-5 Generator](https://www.uuidtools.com/v5), e.g. uuid5(namespa
 
 - For ShipmentTracking, the Loading data object is required to establish a connection between Pieces and the TransportMovements
 
-**TransportMovement**
-
-- For ShipmentTracking, every TransportMovement MUST have a [transportIdentifier](https://onerecord.iata.org/ns/cargo#transportIdentifier) property with the following structure:
-`{carrier code in capital letters as two 2-digit code}{flight number 3-digit to 5-digit}{optional suffix}/{departure date as DDMMMyyyy}` or as regular expression:
-`([A-Z]{2}|[A-Z\d]{2})\d{3-5}[A-Z]?\/\d{2}[A-Z]{3}\d{4}`. Examples: LH100S/16OCT2023, S72510/02NOV2023
-- [arrivalLocation](https://onerecord.iata.org/ns/cargo#arrivalLocation) property MUST be a link to a Location data object
-- [departureLocation](https://onerecord.iata.org/ns/cargo#departureLocation) property MUST be a link to a Location data object
-
-```json
-{
-    "@context": {
-        "@vocab": "https://onerecord.iata.org/ns/cargo#"
-    },
-    "@id": "https://1r.example.com/logistics-objects/bfcae0d4-9a29-4e60-880d-213aac434776",
-    "@type": "TransportMovement",
-    "actions": {
-        "@id": "https://1r.example.com/logistics-objects/5a4ade17-fe91-4d0c-bb79-8685a99d5634"
-    },
-    "arrivalLocation": {
-        "@id": "https://1r.example.com/logistics-objects/JFK"
-    },
-    "departureLocation": {
-        "@id": "https://1r.example.com/logistics-objects/FRA"
-    },
-    "transportIdentifier": "LH400/16OCT2023"
-}
-```
-([transport-movement-LH400.json](./assets/transport-movement-LH400.json))
 
 **LogisticsEvent**
 
