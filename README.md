@@ -57,20 +57,47 @@ No relevant variants known.
 
 ## Background
 
+### Stakeholders
+
+In this use case, four parties are involved: The trucking company, the forwarder, the GHA and the carrier. As the trucker usually acts as an agent for the forwarder, and the GHA as an agent for the carrier, we will focus on the roles of trucker and GHA in the following documentation. 
+
 ### Business Process
 
-The business process for this use case is quite simple. A trucker provides the truck and driver information plus the shipments on a truck, a GHA retrieves this information and shares dock assignments. This process is very general and can cover export e.g. acceptance at GHA, import pickups at GHA, incoming Road Feed Service, Forwarder´s pick up at Shipper. Principally, it can be used wherever the information of a transport using a TransportMeans (e.g. truck, train, AGV) is to be shared.
+The business process for this use case is quite simple. A trucker provides the truck and driver information plus the shipments on a truck, a GHA retrieves this information and shares dock assignments. Also, the terms "trucker" and "trucking company" are synonym here, as the information can be provided by the trucking company (e.g. directy from the TMS, ), or by the trucker (e.g. an app using ONE Record for exchanging data). This process is very general and can cover export e.g. acceptance at GHA, import pickups at GHA, incoming Road Feed Service, Forwarder´s pick up at Shipper. Principally, it can be used wherever the information of a transport using a TransportMeans (e.g. truck, train, AGV) is to be shared.
 
 To examplify the use case, the following setting was assumed: 
 
-- A Trucker wants to preAdvice
+A Trucker/Trucking Company wants to preAdvice the truck related data for export acceptance at the GHA. In return, the trucker expects to get a ramp assignment and a QR code for each drop off for accelerated identification.
 
-data was shared
+The following business data objects are shared by the trucker:
 
-Trucker
+General Details
+- Quick Drop-Off Airport
+- Type of vehicle
+- Plate
+- Company name
+- STA or ETA
+- Piece(s) loaded
 
+Driver details
+- First name 
+- Last name 
+- Birth date
+- Mobile Phone number
+- Email address
+- Type of ID
+- ID Number
+- Place of ID Issueing
 
-For this specific use case, the following information is 
+Remarks: The Quick Drop-Off Airport could be removed as the drop off station is clear by the origin on the AWB.
+
+In return, the GHA will provide
+
+- QDO-Code (Cleartext and Barcode)
+- QDO Groups with each
+    - Dock (Name and Geolocation (optional))
+    - Pieces to be droped of there
+    - Time slot (optional)
 
 ### ONE Record Standard
 
@@ -103,7 +130,7 @@ This good practice incorporates data classes of the [ONE Record cargo ontology](
 and the [ONE Record core code lists ontology](https://onerecord.iata.org/ns/coreCodeLists).
 For clarity, class inheritance and unused data properties are excluded, and only required properties and relationships are visualized in the following.
 
-The following class diagram shows the LogisticsObject data classes used and their relationships to the LogisticsEvent data class in the context of ShipmentTracking.
+The following class diagram shows the LogisticsObject data classes used and their relationships in the context of TruckPreAdvice.
 
 ```mermaid
 sequenceDiagram
