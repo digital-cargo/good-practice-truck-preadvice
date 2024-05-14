@@ -204,6 +204,7 @@ Additionally, to facilitate comprehension, practical data examples are included 
 **Location**
 
 - A Location data object is a special LogisticsObject because it has a long lifespan and is linked comparatively often. Therefore, a location object SHOULD only be created once and then only referenced.
+  LOCATION BY GHA
 - It is possible that the same or a similar location is referenced by different organizations with different @id, e.g. because they are hosted on different servers. For example, a TransportMovement (on the ONE Record server of a carrier) refers to an FRA location, while a waybill (on the ONE Record server of a forwarder) also refers to an FRA location. In this case, both locations can have different @id. However, it is RECOMMENDED to refer to the same location (represented by the same @id) wherever possible.
 
 ```json
@@ -254,6 +255,7 @@ Additionally, to facilitate comprehension, practical data examples are included 
 - For the delivery process, it is recommended to use the loading object for the previous loading of the truck, indicating the loadingType "LOADING"; Carrier / GHA then share the unloading of the truck in a new LoadingAction.
   
 - For a pickup, it is recommended to also use the loadingType "LOADING" and link the pieces to be loaded, but add an embedded actionTimeType "PLANNED" and an  actionStartTime with the estimated pickup-time
+- Leeres TransportMovement hin für QPU, volles TM zurück, Abholschein 
   
 - This can be a skeleton, or provide information beyond linking a transportMovmenet with the Pieces can be shared
   
