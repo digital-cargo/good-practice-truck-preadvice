@@ -152,7 +152,7 @@ sequenceDiagram
     deactivate GHA TMS
     GHA ONE Record Server->>+ Trucker ONE Record Server: PATCH transportMovement 1 into pieces
     note over GHA ONE Record Server: via loading
-    GHA ONE Record Server->>+ Trucker ONE Record Server: PATCH transportMovement 2 into pieces
+    GHA ONE Record Server->>+ Trucker ONE Record Server: PATCH transportMovement n into pieces
     note over GHA ONE Record Server: via loading
     Trucker ONE Record Server ->>+Trucker TMS: Provide assigned arrivalLocation to driver (= ramp)
 ```
