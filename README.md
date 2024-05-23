@@ -130,11 +130,11 @@ For example, in ONE Record, it is not a legal object or a paper document such as
 Instead, it is the actual [Piece](https://onerecord.iata.org/ns/cargo#Piece), the wrapping [Shipment](https://onerecord.iata.org/ns/cargo#Shipment), or a [TransportMovement](https://onerecord.iata.org/ns/cargo#TransportMovement) activity that reaches a milestone in the journey. 
 For example, when every piece in a shipment has been loaded and the aircraft departs, we consider the entire shipment as having departed.
 
-## Data Sharing
-
 ### Sequence
 
 The following sequence diagram shows in which sequence data object need to be created to fulfill the process.
+
+As a one-time preparatory, the relevant locations must be created and subscribed on:
 
 ```mermaid
 sequenceDiagram
@@ -143,27 +143,49 @@ sequenceDiagram
     participant GHA ONE Record Server
     participant GHA TMS
     autonumber
-    Trucker TMS->>+Trucker ONE Record Server: Creat location "Export acceptance"
-    GHA ONE Record Server->>+Trucker ONE Record Server: SUB on location "Export acceptance"
-    note over Trucker ONE Record Server, GHA ONE Record Server: specific part per TruckPreAdvice below
-    Trucker TMS->>+Trucker ONE Record Server: Creates a transportMovement with destination location "Export acceptance"
-    Trucker ONE Record Server->>+GHA ONE Record Server: PUB notification for creation of transportMovement with destination location "Export acceptance"
-    activate Trucker ONE Record Server
-        GHA ONE Record Server->>+ Trucker ONE Record Server: GET transportMovement
-        Trucker ONE Record Server->>+ GHA ONE Record Server: Provides transportMovement
-        note over GHA ONE Record Server: includes LOs: loading, pieces, shipment, waybill, transportMeans, transportMeansOperator, externalReference
-    deactivate Trucker ONE Record Server
-    activate GHA TMS
-        GHA ONE Record Server->>+GHA TMS: POSTS QDO-Request
-        GHA TMS->>+GHA ONE Record Server: Creates transportMovement 1 for location 1 (incl. QDO-Code)
-        GHA TMS->>+GHA ONE Record Server: Creates transportMovement n for location n (incl. QDO-Code)
-    deactivate GHA TMS
-    GHA ONE Record Server->>+ Trucker ONE Record Server: PATCH transportMovement 1 into pieces
-    note over GHA ONE Record Server: via loading
-    GHA ONE Record Server->>+ Trucker ONE Record Server: PATCH transportMovement n into pieces
-    note over GHA ONE Record Server: via loading
+    Trucker TMS->>+Trucker ONE Record Server: Creat location "FRA GHA Trucking Gate"
+    GHA ONE Record Server->>+Trucker ONE Record Server: SUB on location "FRA GHA Trucking Gate"
+    GHA TMS->>+GHA ONE Record Server: Creat location "FRA GHA Truck Dock 1"
+    GHA TMS->>+GHA ONE Record Server: Creat location "FRA GHA Truck Dock 2"
+    GHA ONE Record Server->>+Trucker ONE Record Server: SUB on all "ServiceRequests"
+```
+
+The specific sequence of actions per TruckPreAdvice then is as follows:
+
+Step 1: Trucker to provide the shipment data and request the QDO-Service at the GHA
+
+
+
+
+
+BACKUP:
+
+```mermaid
+sequenceDiagram
+    participant Trucker TMS
+    participant Trucker ONE Record Server
+    participant GHA ONE Record Server
+    participant GHA TMS
+    autonumber
+    Trucker TMS->>+Trucker ONE Record Server: Creates the Pieces, Shipment and Waybill and link them
+    Trucker TMS->>+Trucker ONE Record Server: Creates the TransportMeans (Truck), TransportOperator (Driver)
+    Trucker TMS->>+Trucker ONE Record Server: Creates the proposedTransportMovement to the destination location "FRA GHA Trucking Gate" and link the pieces
+    Trucker TMS->>+Trucker ONE Record Server: Creates ServiceRequest with linked proposedTransportMovement
+    Trucker ONE Record Server->>+GHA ONE Record Server: Notifies for the creation of ServiceRequest
+    GHA ONE Record Server->>+ Trucker ONE Record Server: GET ServiceRequest
+    GHA ONE Record Server->>+ Trucker ONE Record Server: GET proposedTransportMovement, transportMeans and transportOperator
+    GHA ONE Record Server->>+ Trucker ONE Record Server: GET Pieces, Shipment and Waybill
+    GHA ONE Record Server->>+GHA TMS: Retrieves ServiceRequest incl. linked data 
+    GHA TMS->>+GHA ONE Record Server: Creates proposedTransportMovement 1 and 2
+    GHA TMS->>+GHA ONE Record Server: Creates HandlingServiceOption with status BOOKABLE
+    GHA ONE Record Server->>+Trucker ONE Record Server: PATCH the HandlingServiceOption into the ServiceRequest
+    Trucker ONE Record Server->>+ Trucker TMS: Retrieves option and evaluates
+    Trucker TMS->>+ Trucker ONE Record Server: Triggers PATCH for Booking
+    Trucker ONE Record Server->>+ GHA ONE Record Server: GET proposedTransportMovement, transportMeans and transportOperator
     Trucker ONE Record Server ->>+Trucker TMS: Provide assigned arrivalLocation to driver (= ramp)
 ```
+
+## Data Sharing
 
 ### Data Model
 
@@ -190,7 +212,7 @@ Additionally, to facilitate comprehension, practical data examples are included 
 **Location**
 
 - As a starting point, there must be a specific location as a destination for truck drives to the carrier for the purpose of cargo drop off / pick up.
-- As a convention for this, we would suggest to use a carrier specific wording, e.g. "FRA LH Trucking Gate". This object can either be created by the carrier, or the trucker. In our example, the trucker this object. In the other case, subscriptions and patch requests must be adjusted accordingly.
+- As a convention for this, we would suggest to use a carrier specific wording, e.g. "FRA GHA Trucking Gate". This object can either be created by the carrier, or the trucker. In our example, the trucker this object. In the other case, subscriptions and patch requests must be adjusted accordingly.
 - It is also possible to use a more general location (e.g. a three letter code "FRA", provided by the Airport Operator). As the subscription on this location will inform all GHAs for all trucks, the access needs to be steered with Access control lists. This is not recommended as it might lead to very high data traffic on this one location.
 - It is important, that the same location is only created ONCE, not by several parties.
 
