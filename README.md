@@ -65,7 +65,12 @@ The terms "trucker" and "trucking company" are synonym here, as the information 
 
 ### Business Process
 
-The business process for this use case is following basic ONE Record concepts. The whole TruckPreAdvice process is using a GHA Service called "QuickDropOff". A trucker provides a service request with the essential information: the truck and driver information plus the shipments . Principally, it can be used wherever the information of a transport using a TransportMeans (e.g. truck, train, AGV) is to be shared.
+The business process for this use case is following basic ONE Record concepts.  The whole TruckPreAdvice process is using a GHA Service called "QuickDropOff". The sequence for this use case is as follows:
+- A trucker provides a serviceRequest with the essential information: the truck and driver information plus the shipments.
+- The GHA then provides one or more options for the service. Each service option is a dock slot option a different drop-off time. For this example, we assume there´s only one option provided by the GHA.
+- If the slot fits and is to be confirmed, the trucker then requests the GHA to change the Status of the bookingOption to BOOKED.
+- The GHA then provides the transportMovements for the different docs and the different pieces according to their nature (e.g. PER, COOL, DGR).
+- During the execution of this sequence, the "ACTUAL" timestamps are added to the transportMovement.
 
 To examplify the use case, the following setting was assumed:
 
@@ -97,6 +102,7 @@ Remarks: The Quick Drop-Off Airport could be removed as the drop off station is 
 
 In return, the GHA will provide
 
+- A sequence of dock assignments
 - QDO-Code (Cleartext and Barcode)
 - QDO Groups with each
   - Dock (Name and Geolocation (optional))
@@ -410,6 +416,10 @@ single ONE Record server / multiple ONE Record clients
 ## Glossary
 
 see [digita-cargo/glossary](https://github.com/digital-cargo/glossary)
+
+Business terms:
+
+- "Dock": a dock in this context is the physical location, where a truck is unloaded. Often, the term "ramp" is used. We intentionally used "dock", to aviod confusion with the ramp on the apron.
 
 ## References
 
