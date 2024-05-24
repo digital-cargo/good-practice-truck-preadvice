@@ -154,6 +154,7 @@ The specific sequence of actions per TruckPreAdvice then is as follows:
 
 Step 1: Trucker to provide the shipment data and request the QDO-Service at the GHA
 
+```mermaid
 sequenceDiagram
     participant Trucker TMS
     participant Trucker ONE Record Server
@@ -175,35 +176,9 @@ sequenceDiagram
     GHA TMS->>+GHA ONE Record Server: CREATE handlingService, linked transportMovements<br/> (from gate to dock 1 and dock 1 to dock 2)<br/> the unloading actions and scheduled movementTimes
     Trucker TMS ->>+ Trucker ONE Record Server: Updates MovementTimes in TransportMovements with actuals
     Trucker ONE Record Server ->>+ GHA ONE Record Server: PATCH actual MovementTimes into transportMovements 
-
-
-
-BACKUP:
-
-```mermaid
-sequenceDiagram
-    participant Trucker TMS
-    participant Trucker ONE Record Server
-    participant GHA ONE Record Server
-    participant GHA TMS
-    autonumber
-    Trucker TMS->>+Trucker ONE Record Server: Creates the Pieces, Shipment and Waybill and link them
-    Trucker TMS->>+Trucker ONE Record Server: Creates the TransportMeans (Truck), TransportOperator (Driver)
-    Trucker TMS->>+Trucker ONE Record Server: Creates the proposedTransportMovement to the destination location "FRA GHA Trucking Gate" and link the pieces
-    Trucker TMS->>+Trucker ONE Record Server: Creates ServiceRequest with linked proposedTransportMovement
-    Trucker ONE Record Server->>+GHA ONE Record Server: Notifies for the creation of ServiceRequest
-    GHA ONE Record Server->>+ Trucker ONE Record Server: GET ServiceRequest
-    GHA ONE Record Server->>+ Trucker ONE Record Server: GET proposedTransportMovement, transportMeans and transportOperator
-    GHA ONE Record Server->>+ Trucker ONE Record Server: GET Pieces, Shipment and Waybill
-    GHA ONE Record Server->>+GHA TMS: Retrieves ServiceRequest incl. linked data 
-    GHA TMS->>+GHA ONE Record Server: Creates proposedTransportMovement 1 and 2
-    GHA TMS->>+GHA ONE Record Server: Creates HandlingServiceOption with status BOOKABLE
-    GHA ONE Record Server->>+Trucker ONE Record Server: PATCH the HandlingServiceOption into the ServiceRequest
-    Trucker ONE Record Server->>+ Trucker TMS: Retrieves option and evaluates
-    Trucker TMS->>+ Trucker ONE Record Server: Triggers PATCH for Booking
-    Trucker ONE Record Server->>+ GHA ONE Record Server: GET proposedTransportMovement, transportMeans and transportOperator
-    Trucker ONE Record Server ->>+Trucker TMS: Provide assigned arrivalLocation to driver (= ramp)
 ```
+
+
 
 ## Data Sharing
 
