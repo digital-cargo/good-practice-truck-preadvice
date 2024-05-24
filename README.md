@@ -154,7 +154,27 @@ The specific sequence of actions per TruckPreAdvice then is as follows:
 
 Step 1: Trucker to provide the shipment data and request the QDO-Service at the GHA
 
-
+sequenceDiagram
+    participant Trucker TMS
+    participant Trucker ONE Record Server
+    participant GHA ONE Record Server
+    participant GHA TMS
+    autonumber
+    Trucker TMS->>+Trucker ONE Record Server: CREATE the Pieces, Shipment, Waybill, TransportMeans (Truck), <br/> TransportOperator (Driver), and transportMovement to the destination<br/> location "FRA GHA Trucking Gate"
+    Trucker TMS->>+Trucker ONE Record Server: CREATE the proposedTransportMovement to the destination<br/> location "FRA GHA Trucking Gate", ServiceRequest and link them 
+    Trucker ONE Record Server->>+GHA ONE Record Server: Notification for the creation of ServiceRequest and the linking of an <br/>transportMovement into the  location "FRA GHA Trucking Gate"
+    GHA ONE Record Server->>+ Trucker ONE Record Server: GET ServiceRequest, proposedTransportMovement, transportMeans, <br/>transportOperator, Pieces, Shipment and Waybill
+    GHA ONE Record Server->>+GHA TMS: Retrieves ServiceRequest incl. linked data 
+    GHA TMS->>+GHA ONE Record Server: CREATE proposedTransportMovement 1 and 2 and <br/> HandlingServiceOption with status BOOKABLE
+    GHA ONE Record Server->>+Trucker ONE Record Server: PATCH the HandlingServiceOption into the ServiceRequest
+    Trucker ONE Record Server->>+ Trucker TMS: Retrieves option and evaluates
+    Trucker TMS ->>+ Trucker ONE Record Server: Triggers accepting the option
+    Trucker ONE Record Server ->>+ GHA ONE Record Server: PATCH for statusBookingOption=BOOKED in HandlingServiceOption 
+    GHA ONE Record Server->>+GHA TMS: Triggers internal service status update
+    GHA TMS->>+GHA ONE Record Server: Implement Requested PATCH HandlingServiceOption 
+    GHA TMS->>+GHA ONE Record Server: CREATE handlingService, linked transportMovements<br/> (from gate to dock 1 and dock 1 to dock 2)<br/> the unloading actions and scheduled movementTimes
+    Trucker TMS ->>+ Trucker ONE Record Server: Updates MovementTimes in TransportMovements with actuals
+    Trucker ONE Record Server ->>+ GHA ONE Record Server: PATCH actual MovementTimes into transportMovements 
 
 
 
