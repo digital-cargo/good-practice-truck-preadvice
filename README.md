@@ -63,14 +63,8 @@ In this use case, four parties are involved: The trucking company, the forwarder
 
 The terms "trucker" and "trucking company" are synonym here, as the information can be provided by the trucking company (e.g. directy from the TMS, ), or by the trucker (e.g. an app using ONE Record for exchanging data). This process is very general and can cover export e.g. acceptance at GHA, import pickups at GHA, incoming Road Feed Service, Forwarder´s pick up at Shipper. 
 
-### Business Process
+### Business Process (pragmatic approach)
 
-The business process for this use case is following basic ONE Record concepts.  The whole TruckPreAdvice process is using a GHA Service called "QuickDropOff". The sequence for this use case is as follows:
-- A trucker provides a serviceRequest with the essential information: the truck and driver information plus the shipments.
-- The GHA then provides one or more options for the service. Each service option is a dock slot option a different drop-off time. For this example, we assume there´s only one option provided by the GHA.
-- If the slot fits and is to be confirmed, the trucker then requests the GHA to change the Status of the bookingOption to BOOKED.
-- The GHA then provides the transportMovements for the different docs and the different pieces according to their nature (e.g. PER, COOL, DGR).
-- During the execution of this sequence, the "ACTUAL" timestamps are added to the transportMovement.
 
 To examplify the use case, the following setting was assumed:
 
@@ -109,6 +103,7 @@ In return, the GHA will provide
   - Pieces to be droped of there
   - Time slot (optional)
 
+
 ### ONE Record Standard
 
 The implementation of shipment tracking as described in this good practice is based entirely on the [ONE Record standard](https://github.com/IATA-Cargo/ONE-Record).
@@ -130,7 +125,7 @@ For example, in ONE Record, it is not a legal object or a paper document such as
 Instead, it is the actual [Piece](https://onerecord.iata.org/ns/cargo#Piece), the wrapping [Shipment](https://onerecord.iata.org/ns/cargo#Shipment), or a [TransportMovement](https://onerecord.iata.org/ns/cargo#TransportMovement) activity that reaches a milestone in the journey. 
 For example, when every piece in a shipment has been loaded and the aircraft departs, we consider the entire shipment as having departed.
 
-### Sequence
+### Implementation
 
 The following sequence diagram shows in which sequence data object need to be created to fulfill the process.
 
@@ -149,6 +144,42 @@ sequenceDiagram
     GHA TMS->>+GHA ONE Record Server: Creat location "FRA GHA Truck Dock 2"
     GHA ONE Record Server->>+Trucker ONE Record Server: SUB on all "ServiceRequests"
 ```
+
+### Business Process (pragmatic approach)
+
+A pragmatic approach is that the Trucker provides a TransportMovement to the GHA´s trucking gate and the GHA then provides TransportMovements from the trucking gate to one or more trucking docs.
+
+```mermaid
+sequenceDiagram
+    participant Trucker TMS
+    participant Trucker ONE Record Server
+    participant GHA ONE Record Server
+    participant GHA TMS
+    autonumber
+    Trucker TMS->>+Trucker ONE Record Server: CREATE the Pieces, Shipment, Waybill, TransportMeans (Truck), <br/> TransportOperator (Driver), and transportMovement to the destination<br/> location "FRA GHA Trucking Gate"
+    Trucker TMS->>+Trucker ONE Record Server: CREATE the proposedTransportMovement to the destination<br/> location "FRA GHA Trucking Gate" and link them 
+    Trucker ONE Record Server->>+GHA ONE Record Server: Notification for the creation of the transportMovement <br/> with the location "FRA GHA Trucking Gate"
+    GHA ONE Record Server->>+ Trucker ONE Record Server: GET ServiceRequest, proposedTransportMovement, transportMeans, <br/>transportOperator, Pieces, Shipment and Waybill
+    GHA ONE Record Server->>+GHA TMS: Retrieves assembled QDO-List 
+    GHA TMS->>+GHA ONE Record Server: CREATE QuickDropOff list as external reference incl. barcode
+    GHA TMS->>+GHA ONE Record Server: CREATE TransportMovement 1 (Gate-Ramp1) and 2 (Ramp1-Ramp2)<br/> incl. externalRefence and trigger patch into TransportMeans from Trucker
+    GHA ONE Record Server->>+Trucker ONE Record Server: CR the TransportMovements into the Pieces 
+    Trucker ONE Record Server->>+ Trucker TMS: Retrieves Slot offer
+    Trucker TMS ->>+ Trucker ONE Record Server: Triggers accepting the slot
+    Trucker ONE Record Server ->>+ GHA ONE Record Server: Executes CR to link the additional TransportMovements
+    GHA TMS->>+GHA ONE Record Server: Updates the TransportMovement with actual timestamps 
+```
+
+### Business Process (using the Service-concept)
+
+This variant of the business process applies the Service-concept of ONE Record. The TruckPreAdvice process is using a GHA Service called "QuickDropOff". The sequence for this use case is as follows:
+- A trucker provides a serviceRequest with the essential information: the truck and driver information plus the shipments.
+- The GHA then provides one or more options for the service. Each service option is a dock slot option a different drop-off time. For this example, we assume there´s only one option provided by the GHA.
+- If the slot fits and is to be confirmed, the trucker then requests the GHA to change the Status of the bookingOption to BOOKED.
+- The GHA then provides the transportMovements for the different docs and the different pieces according to their nature (e.g. PER, COOL, DGR).
+- During the execution of this sequence, the "ACTUAL" timestamps are added to the transportMovement.
+
+
 
 The specific sequence of actions per TruckPreAdvice then is as follows:
 
