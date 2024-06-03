@@ -106,7 +106,7 @@ In return, the GHA will provide
 
 ### ONE Record Standard
 
-The implementation of shipment tracking as described in this good practice is based entirely on the [ONE Record standard](https://github.com/IATA-Cargo/ONE-Record).
+The implementation of the TruckPreAdvice as described in this good practice is based entirely on the [ONE Record standard](https://github.com/IATA-Cargo/ONE-Record).
 
 This good practice incorporates data classes of the [ONE Record cargo ontology v3.0.0](https://onerecord.iata.org/ns/cargo)
 and the [ONE Record core code lists ontology v0.0.3](https://onerecord.iata.org/ns/coreCodeLists).
@@ -147,7 +147,7 @@ sequenceDiagram
 
 ### Business Process (pragmatic approach)
 
-A pragmatic approach is that the Trucker provides a TransportMovement to the GHA´s trucking gate and the GHA then provides TransportMovements from the trucking gate to one or more trucking docs.
+A pragmatic approach is that the trucker provides a TransportMovement to the GHA´s trucking gate and the GHA then provides TransportMovements from the trucking gate to one or more trucking docs.
 
 ```mermaid
 sequenceDiagram
@@ -238,8 +238,8 @@ Additionally, to facilitate comprehension, practical data examples are included 
 **Location**
 
 - As a starting point, there must be a specific location as a destination for truck drives to the carrier for the purpose of cargo drop off / pick up.
-- As a convention for this, we would suggest to use a carrier specific wording, e.g. "FRA GHA Trucking Gate". This object can either be created by the carrier, or the trucker. In our example, the trucker this object. In the other case, subscriptions and patch requests must be adjusted accordingly.
-- It is also possible to use a more general location (e.g. a three letter code "FRA", provided by the Airport Operator). As the subscription on this location will inform all GHAs for all trucks, the access needs to be steered with Access control lists. This is not recommended as it might lead to very high data traffic on this one location.
+- As a convention for this, we would suggest to use a carrier specific wording, e.g. "FRA GHA Trucking Gate". This object can either be created by the carrier, or the trucker. In our example, the trucker creates this object. In the other case, subscriptions and patch requests must be adjusted accordingly.
+- It is also possible to use a more general location (e.g. a three letter code "FRA", provided by the Airport Operator). As the subscription on this location will inform all GHAs for all trucks, the access needs to be steered with access control lists. This is not recommended as it might lead to very high data traffic on this one location.
 - It is important, that the same location is only created ONCE, not by several parties.
 
 **TransportMovement**
@@ -248,18 +248,18 @@ Additionally, to facilitate comprehension, practical data examples are included 
 - The [arrivalLocation](https://onerecord.iata.org/ns/cargo#arrivalLocation) must link to the carrier´s / GHA´s gate.
 - Carrier/GHA have to subscribe on that location, if the location is provided by the trucker, so they get notified whenever a truck is planned for this destination.
 - The [transportIdentifier](https://onerecord.iata.org/ns/cargo#transportIdentifier) can be created according to the requirements and conventions of the trucking company and does not have to follow use case specific rules.
-- To share the scheduled and/or estimated time of arrival at the carrier / GHA, at leas one MovementTimes object must be embedded in the transportMovement.
+- To share the scheduled and/or estimated time of arrival at the carrier / GHA, at least one MovementTimes object must be embedded in the transportMovement.
 - The direction for the estimated arrival must be "INBOUND". As this is an essential part of the use case, the use of this data field is mandatory for this use case.
-- The MovementTimeType must be set according to the nature of the MovementTime, "ESTIMATED" or "SCHEDULED"
-- The MovementMilestone ?????
-- The MovementTimestamp provides the arrival timestamp for this MovementTimeType.
+- The movementTimeType must be set according to the nature of the MovementTime, "ESTIMATED" or "SCHEDULED"
+- TBD - The movementMilestone ?????
+- The movementTimestamp provides the arrival timestamp for this MovementTimeType.
 - One or more movementTimes can be embedded, updated movementTimes are simply appended to the previous movementTimes. (CHECK?????)
 
 ([transport-movement-LH400.json](./assets/transport-movement-LH400.json))
 
 **Location**
-
-- A Location data object is a special LogisticsObject because it has a long lifespan and is linked comparatively often. Therefore, a location object SHOULD only be created once and then only referenced.
+TBC - TWICE??
+- A location data object is a special LogisticsObject because it has a long lifespan and is linked comparatively often. Therefore, a location object SHOULD only be created once and then only referenced.
   LOCATION BY GHA
 - It is possible that the same or a similar location is referenced by different organizations with different @id, e.g. because they are hosted on different servers. For example, a TransportMovement (on the ONE Record server of a carrier) refers to an FRA location, while a waybill (on the ONE Record server of a forwarder) also refers to an FRA location. In this case, both locations can have different @id. However, it is RECOMMENDED to refer to the same location (represented by the same @id) wherever possible.
 
@@ -284,43 +284,38 @@ Additionally, to facilitate comprehension, practical data examples are included 
 
 - The transportMeans is directly linked into the TransportMovement as described above.
 - For this use case, the transportMeans contain the information on the physical truck and the trucking company.
-- The type of vehicle is defined in the vehicleType data field
-- The plate is shared via the vehicleRegistration
+- The type of vehicle is defined in the vehicleType data field.
+- The plate is shared via the vehicleRegistration.
 - The trucking company is shared via the transportOrganization.
-- The TransportOperator is the person driving the truck and is linked into this object
+- The TransportOperator is the person driving the truck and is linked into this object.
 
 **person**
 
 - The Person contains information on the driver.
 - First and last name are mandatory for this use case.
 - The field "document" is of type externalReference contains links to the ID document of the driver.
-
-- The date of birth should be shared as well as a Mobile phone number and emailaddress in the embedded contactDetails.
+- The date of birth should be shared as well as a mobile phone number and emailaddress in the embedded contactDetails.
 
 **externalReference**
 
 - The externalReference contains the id information of the driver.
-- The Type of ID is share in the documentType. This can be e.g. "Driver Licence", "Passport" or "ID-Card"
+- The Type of ID is shared in the documentType. This can be e.g. "Driver Licence", "Passport" or "ID-Card"
 - The ID Number is to be shared in the documentIdentifier
-- Place of ID Issueing is to be shared in the createdAtLocation (LINK??)
+- TBC - Place of ID issueing is to be shared in the createdAtLocation (LINK??)
 
 **Loading**
 
-- to link pieces and transportMovement, a loading action must be created. TransportMovement and LoadingAction are linked via "onTransportMeans" in the Loading and "LoadingActions" in the TransportMovement
-  
+- to link Pieces and TransportMovement, a loading action must be created. TransportMovement and LoadingAction are linked via "onTransportMeans" in the Loading and "LoadingActions" in the TransportMovement.
 - For the delivery process, it is recommended to use the loading object for the previous loading of the truck, indicating the loadingType "LOADING"; Carrier / GHA then share the unloading of the truck in a new LoadingAction.
-  
-- For a pickup, it is recommended to also use the loadingType "LOADING" and link the pieces to be loaded, but add an embedded actionTimeType "PLANNED" and an  actionStartTime with the estimated pickup-time
-- Leeres TransportMovement hin für QPU, volles TM zurück, Abholschein 
-  
-- This can be a skeleton, or provide information beyond linking a transportMovmenet with the Pieces can be shared
-  
-- As a minimum requirement, it must link the TransportMovement in the "servedActivity" and the loaded pieces in the "loadedPieces" data field
+- For a pickup, it is recommended to also use the loadingType "LOADING" and link the pieces to be loaded, but add an embedded actionTimeType "PLANNED" and an  actionStartTime with the estimated pickup-time.
+- TBC - Leeres TransportMovement hin für QPU, volles TM zurück, Abholschein.
+- This can be a skeleton, or provide information beyond linking a TransportMovmenet with the Pieces that can be shared.
+- As a minimum requirement, it must link the TransportMovement in the "servedActivity" and the loaded pieces in the "loadedPieces" data field.
   
 
 **Piece**
 
-As ONE Record is piece-centric, pieces are the primary objects that are used for loading and unloading. This also corresponds to the physical world, where pieces, not shipments are loaded and / or unloaded
+As ONE Record is piece-centric, pieces are the primary objects that are used for loading and unloading. This also corresponds to the physical world, where pieces, not shipments are loaded and / or unloaded.
 
 - There are no specific requirements to the piece for this use case, beyond the linking of the loading action in the involvedInActions.
   
@@ -356,7 +351,7 @@ As ONE Record is piece-centric, pieces are the primary objects that are used for
 
 **Shipment**
 
-As the sharing of the AWB-Numbers of the Shipments on the truck is mandatory, a Shipment-LO must be created to link the pieces to the Waybill-Object. 
+As the sharing of the AWB-Numbers of the Shipments on the truck is mandatory, a Shipment-Object must be created to link the pieces to the Waybill-Object. 
 
 ```json
 {
@@ -390,7 +385,7 @@ As the sharing of the AWB-Numbers of the Shipments on the truck is mandatory, a 
 
 **Waybill**
 
-- The purpose of the Waybill-LO(s) here is to share the AWB Number(s) of the shipments on the truck.
+- The purpose of the Waybill-Object(s) here is to share the AWB Number(s) of the shipments on the truck.
  
 ```json
 {
@@ -439,13 +434,13 @@ In terms of data exchange, there are no specific requirements for this use case 
 
 The publisher's ONE Record API MUST implement the
 
-- GET LogisticsObject endpoint
+- POST, GET & PATCH LogisticsObject endpoint
 - Subscribe endpoint
 
 The subscriber's MUST implement a `/notifications` endpoint to receive Notifications.
 
 ## Required functions
-
+!!! TO BE UPDATED
 The following technical features are required on the data provider side:
 
 - Implemented basic requests: GET, POST
@@ -477,9 +472,7 @@ Business terms:
 
 ## Acknowledgements
 
-The initial version of this document is the outcome of the 
-"Joint ONE Record piloting and transition working group // technical part" at IATA. 
-It was orchestrated by Arnaud Lambert of IATA as secretary and [Philipp Billion](https://github.com/DrPhilippBillion) of Lufthansa Cargo as chairman.
+The initial version of this document is the outcome of the Digital Testbed Air Cargo (DTAC), a reasearch framework funded by the German Federal Ministry for Digital and Transport, and the involved partners in this use case (Lufthansa Cargo, CHI Germany, Fraunhofer IML). 
 
 Special thanks to [Niclas Scheiber](https://github.com/NiclasScheiber), Frankfurt University of Applied Sciences for preparing version 3.0.0 of the 
 ONE Record core ontology in coordination with the IATA ONE Record data model focus group.
