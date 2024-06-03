@@ -7,12 +7,12 @@
 
 Today, there´s a lack of transparency for the information on road trucks in the context of cargo transportation. This is often the result of strongly distributed responsibilities and tasks between trucking company, forwarder and air cargo carrier.
 
-The ONE Record standard is supposed to solve this problem by providing a standard tp share any kind of data between any stakeholder. This good practice document describes the methodology for providing and consuming TruckPreAdvice Information via ONE Record, making this data effortlessly accessible to others. Based on the ONE Record API version 2.0.0 and the ONE Record Data Model version 3.0.0, this document provides guidance on how to implement this data in an easy-to-use and standardized manner.
+The ONE Record standard is supposed to solve this problem by providing a standard to share any kind of data between any stakeholder. This good practice document describes the methodology for providing and consuming TruckPreAdvice information via ONE Record, making this data effortlessly accessible to others. Based on the ONE Record API version 2.0.0 and the ONE Record Data Model version 3.0.0, this document provides guidance on how to implement this use case in an easy-to-use and standardized manner.
 
 ## Introduction
 
 In the dynamic world of logistics and cargo, shipment tracking stands as a cornerstone, ensuring visibility, predictability, and trust within the supply chain. 
-Yet, as businesses expand and systems diversify, the industry faces a challenge: the myriad of non-standardized tracking systems, each requiring unique integration and understanding. This fragmentation not only complicates operations but also escalates costs and reduces efficiency.
+Yet, as businesses expand and systems diversify, the industry faces a challenge: the myriad of non-standardized tracking systems, each requiring unique integration and understanding. This fragmentation not only complicates operations but also escalates costs and reduces efficiency. The trucking segment for deliveries e.g. from the trucker as agent of the forwarder to the GHA as agent of the carrier is not an exception here.
 
 Initiated and moderated by the International Air Transportation Association (IATA), in 2022, major stakeholders of the supply chain decided to aim for a renewed data sharing infrastructure for the global logistics networks by 2026.
 Enter the ONE Record standard, which aims to unify, streamline and improve shipping data across the industry. 
@@ -24,7 +24,7 @@ Moreover, the standardized approach curtails complexities tied to integration, c
 
 ### Scope
 
-This good practice details the application of the ONE Record standard specifically in the context of TruckPreAdvice.
+This good practice details the application of the ONE Record standard specifically in the context of the TruckPreAdvice.
 
 **What this document covers:**
 
@@ -36,7 +36,7 @@ This good practice details the application of the ONE Record standard specifical
 - **Compelete implementations**: This good practice includes sample code to support knowledge transfer, it does not provide detailed implementation or out-of-the-box software.
 - **Comparison with other standards**: This good practice describes the implementation with the ONE Record Standard. A comparison with other standards in the industry is not covered.
 - **Vendor-specific implementations**: This document focuses on the standard itself and does not address specific third-party tools or solutions based on the ONE Record standard.
-- **Complete technical specifications**: This document focuses solely on the ONE Record aspects pertinent to shipment tracking and doesn't encompass the entire technical breadth of the standard.
+- **Complete technical specifications**: This document focuses solely on the ONE Record aspects pertinent to the TruckPreAdvice and doesn't encompass the entire technical breadth of the standard.
 - **Industry-wide statistics**: This document does not provide exhaustive industry data or statistics on the adoption or performance of the ONE Record standard.
 
 As the industry evolves, it is imperative for stakeholders to keep up to date on subsequent versions or changes to the standard.
@@ -47,7 +47,7 @@ This document is intended for anyone interested in this topic.
 
 **Geographical coverage**
 
-This shipment tracking best practice is globally applicable, unhindered by regional or national distinctions. 
+This TruckPreAdvice good practice is globally applicable, unhindered by regional or national distinctions. 
 With no legal or operational barriers to its adoption, the outlined solution is primed for worldwide deployment. 
 As a result, companies of any size, at any location, can take advantage of the standardized workflows and increased efficiencies created by ONE Record.
 
