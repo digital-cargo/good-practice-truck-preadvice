@@ -17,7 +17,7 @@ Yet, as businesses expand and systems diversify, the industry faces a challenge:
 Initiated and moderated by the International Air Transportation Association (IATA), in 2022, major stakeholders of the supply chain decided to aim for a renewed data sharing infrastructure for the global logistics networks by 2026.
 Enter the ONE Record standard, which aims to unify, streamline and improve shipping data across the industry. 
 By leveraging the ONE Record standard, stakeholders can draw on a unified data model and API that promotes seamless integration across various platforms and improves collaboration between various organizations. 
-This standardization comes with a number of benefits, from reducing the complexity and cost of custom integrations to enhancing transparency and trust.
+This standardization comes with benefits, from reducing the complexity and cost of custom integrations to enhancing transparency and trust.
 It lays the foundation for standardization, enabling a consistent data model and API across diverse platforms, thereby streamlining integrations and collaborations.
 This uniformity heightens transparency, allowing stakeholders to effortlessly interpret shipment data, fostering trust throughout the supply chain.
 Moreover, the standardized approach curtails complexities tied to integration, conserving both time and resources that might otherwise be diverted to bespoke solutions.
@@ -48,7 +48,7 @@ This document is intended for anyone interested in this topic.
 **Geographical coverage**
 
 This TruckPreAdvice good practice is globally applicable, unhindered by regional or national distinctions. 
-With no legal or operational barriers to its adoption, the outlined solution is primed for worldwide deployment. 
+With no legal or operational barriers to its adoption, the outlined solution is primed for worldwide deployment. Still local legal requirements, like Data Protection Laws, must be taken into account.
 As a result, companies of any size, at any location, can take advantage of the standardized workflows and increased efficiencies created by ONE Record.
 
 ### Variants
@@ -65,10 +65,9 @@ The terms "trucker" and "trucking company" are synonym here, as the information 
 
 ### Business Process (pragmatic approach)
 
-
 To examplify the use case, the following setting was assumed:
 
-A Trucker/Trucking Company wants to preAdvice the truck related data for export acceptance at the GHA. In return, the trucker expects to get a ramp assignment and a QR code for each drop off for accelerated identification.
+A Trucker/Trucking Company wants to preAdvice a truck for export acceptance at the GHA. In return, the trucker expects to get a ramp assignment and a QR code for each drop off for accelerated identification.
 
 The following business data objects are shared by the trucker:
 
@@ -242,6 +241,16 @@ Additionally, to facilitate comprehension, practical data examples are included 
 - It is also possible to use a more general location (e.g. a three letter code "FRA", provided by the Airport Operator). As the subscription on this location will inform all GHAs for all trucks, the access needs to be steered with access control lists. This is not recommended as it might lead to very high data traffic on this one location.
 - It is important, that the same location is only created ONCE, not by several parties.
 
+  
+```json
+{
+    "@id": "http://1r.truckerDomain.com/logistics-objects/FRA-FF-WH",
+    "@type": "https://onerecord.iata.org/ns/cargo#Location",
+    "https://onerecord.iata.org/ns/cargo#locationName": "FRA Freight Forwarder Warehouse",
+    "https://onerecord.iata.org/ns/cargo#locationType": "Warehouse"
+}
+```
+
 **TransportMovement**
 
 - To indicate an incoming truck with shipments to the carrier/GHA, the forwarder has to create a TransportMovement.
@@ -255,30 +264,33 @@ Additionally, to facilitate comprehension, practical data examples are included 
 - The movementTimestamp provides the arrival timestamp for this MovementTimeType.
 - One or more movementTimes can be embedded, updated movementTimes are simply appended to the previous movementTimes. (CHECK?????)
 
-([transport-movement-LH400.json](./assets/transport-movement-LH400.json))
-
-**Location**
-TBC - TWICE??
-- A location data object is a special LogisticsObject because it has a long lifespan and is linked comparatively often. Therefore, a location object SHOULD only be created once and then only referenced.
-  LOCATION BY GHA
-- It is possible that the same or a similar location is referenced by different organizations with different @id, e.g. because they are hosted on different servers. For example, a TransportMovement (on the ONE Record server of a carrier) refers to an FRA location, while a waybill (on the ONE Record server of a forwarder) also refers to an FRA location. In this case, both locations can have different @id. However, it is RECOMMENDED to refer to the same location (represented by the same @id) wherever possible.
-
 ```json
 {
-    "@context": {
-        "@vocab": "https://onerecord.iata.org/ns/cargo#"
-    },
-    "@type": "Location",
-    "@id": "https://1r.example.com/logistics-objects/FRA",
-    "locationCode": {
-        "@type": "CodeListElement",
-        "code": "FRA",
-        "codeListName": "IATA airport codes"
-    }
+    "@id": "http://1r.gha-domain.com/logistics-objects/TM-GHA-GATE",
+    "@type": "https://onerecord.iata.org/ns/cargo#TransportMovement",
+    "https://onerecord.iata.org/ns/cargo#departureLocation": [
+        {
+            "@id": "http://1r.forwarderdomain.com/logistics-objects/FRA-FF-WH"
+        }
+    ],
+    "https://onerecord.iata.org/ns/cargo#arrivalLocation": [
+        {
+            "@id": "http://1r.gha-domain.com/logistics-objects/FRA-GHA-Trucking-Gate"
+        }
+    ],
+    "https://onerecord.iata.org/ns/cargo#transportMeans": [
+        {
+            "@id": "http://1r.truckerDomain.com/logistics-objects/truck-DF-DD345"
+        }
+    ],
+    "https://onerecord.iata.org/ns/cargo#loadingActions":
+    [  
+        {
+        "@id": "http://1r.gha-domain.com/logistics-objects/Loading-Tour22_24-01-05"
+        }
+    ]
 }
 ```
-
-([location-FRA.json](./assets/location-FRA.json))
 
 **transportMeans**
 
@@ -289,6 +301,23 @@ TBC - TWICE??
 - The trucking company is shared via the transportOrganization.
 - The TransportOperator is the person driving the truck and is linked into this object.
 
+```json
+{
+    "@id": "http://1r.truckerDomain.com/logistics-objects/truck-DF-DD345",
+    "@type": "https://onerecord.iata.org/ns/cargo#TransportMeans",
+    "https://onerecord.iata.org/ns/cargo#vehicleType": "Truck",
+    "https://onerecord.iata.org/ns/cargo#vehicleRegistration": "DF-DD345",
+    "https://onerecord.iata.org/ns/cargo#operatedTransportMovement":
+    [  
+        {
+            "@id": "http://1r.gha-domain.com/logistics-objects/FRAWH-GHA-GATE",
+            "@id": "http://1r.gha-domain.com/logistics-objects/GATE-Dock1",
+            "@id": "http://1r.gha-domain.com/logistics-objects/Dock1-Dock2"
+        }
+    ]
+}
+```
+
 **person**
 
 - The Person contains information on the driver.
@@ -296,12 +325,38 @@ TBC - TWICE??
 - The field "document" is of type externalReference contains links to the ID document of the driver.
 - The date of birth should be shared as well as a mobile phone number and emailaddress in the embedded contactDetails.
 
+```json
+{
+    "@id": "http://1r.truckerDomain.com/logistics-objects/Driver4",
+    "@type": "https://onerecord.iata.org/ns/cargo#TransportMeans",
+    "https://onerecord.iata.org/ns/cargo#firstName": "Daniel",
+	"https://onerecord.iata.org/ns/cargo#lastName": "Mustermann"
+    ,
+    "https://onerecord.iata.org/ns/cargo#loadingActions":
+    [  
+        {
+        "@id": "http://1r.truckerDomain.com/logistics-objects/truck-DF-DD345"
+        }
+    ]
+}
+```
+
 **externalReference**
 
 - The externalReference contains the id information of the driver.
 - The Type of ID is shared in the documentType. This can be e.g. "Driver Licence", "Passport" or "ID-Card"
 - The ID Number is to be shared in the documentIdentifier
 - TBC - Place of ID issueing is to be shared in the createdAtLocation (LINK??)
+
+```json
+{
+    "@id": "http://1r.gha-domain.com/logistics-objects/QDO-1",
+    "@type": "https://onerecord.iata.org/ns/cargo#ExternalReference",
+     "https://onerecord.iata.org/ns/cargo#documentLink": "https://owncloud.fraunhofer.de/index.php/s/BQ6rmqromCWq39n",
+     "https://onerecord.iata.org/ns/cargo#documentType": "QuickDropOffListe",
+     "https://onerecord.iata.org/ns/cargo#documentIdentifier": "QDO-1"
+}
+```
 
 **Loading**
 
@@ -311,120 +366,41 @@ TBC - TWICE??
 - TBC - Leeres TransportMovement hin für QPU, volles TM zurück, Abholschein.
 - This can be a skeleton, or provide information beyond linking a TransportMovmenet with the Pieces that can be shared.
 - As a minimum requirement, it must link the TransportMovement in the "servedActivity" and the loaded pieces in the "loadedPieces" data field.
-  
-
-**Piece**
-
-As ONE Record is piece-centric, pieces are the primary objects that are used for loading and unloading. This also corresponds to the physical world, where pieces, not shipments are loaded and / or unloaded.
-
-- There are no specific requirements to the piece for this use case, beyond the linking of the loading action in the involvedInActions.
-  
 
 ```json
-{
-    "@context": {
-        "@vocab": "https://onerecord.iata.org/ns/cargo#"
-    },
-    "@id": "https://1r.example.com/logistics-objects/21ed25ef-4ef9-45ac-9088-b003d32ded95",
-    "@type": "Piece",
-    "ofShipment": {
-        "@id": "https://1r.example.com/logistics-objects/8a76ed85-959e-45d5-8c42-5fd39c08efb1"
-    },
-    "skeletonIndicator": {
-        "@type": "http://www.w3.org/2001/XMLSchema#boolean",
-        "@value": "true"
-    },
-    "grossWeight": {
-        "@type": "Value",
-        "value": {
-            "@type": "http://www.w3.org/2001/XMLSchema#double",
-            "@value": "100"
-        },
-        "unit": {
-            "@id": "https://onerecord.iata.org/ns/coreCodeLists#MeasurementUnitCode_KGM"
-        }
-    }
-}
-```
-
-([piece.json](./assets/piece.json))
-
-**Shipment**
-
-As the sharing of the AWB-Numbers of the Shipments on the truck is mandatory, a Shipment-Object must be created to link the pieces to the Waybill-Object. 
-
-```json
-{
-    "@context": {
-        "@vocab": "https://onerecord.iata.org/ns/cargo#"
-    },
-    "@id": "https://1r.example.com/logistics-objects/8a76ed85-959e-45d5-8c42-5fd39c08efb1",
-    "@type": "Shipment",
-    "pieces": [
+  {
+    "@id": "http://1r.gha-domain.com/logistics-objects/QDO-Dock1",
+    "@type": "https://onerecord.iata.org/ns/cargo#Loading",
+    "https://onerecord.iata.org/ns/cargo#loadedPieces":[  
         {
-            "@id": "https://1r.example.com/logistics-objects/21ed25ef-4ef9-45ac-9088-b003d32ded95"
+            "@id": "http://1r.forwarder.com/logistics-objects/AppleBox1"
         }
     ],
-    "totalGrossWeight": {
-        "@type": "Value",
-        "value": {
-            "@type": "http://www.w3.org/2001/XMLSchema#double",
-            "@value": "100"
-        },
-        "unit": {
-            "@id": "https://onerecord.iata.org/ns/coreCodeLists#MeasurementUnitCode_KGM"
+     "https://onerecord.iata.org/ns/cargo#servedActivity":[  
+        {
+            "@id": "http://1r.gha-domain.com/logistics-objects/GATE-Dock1"
         }
-    },
-    "waybill": {
-        "@id": "https://1r.example.com/logistics-objects/1a8ded38-1804-467c-a369-81a411416b7c"
-    }
+    ],
+    "https://onerecord.iata.org/ns/cargo#loadingType": "UNLOADING",
+	"https://onerecord.iata.org/ns/cargo#performedAt":[  
+      	{
+            "@id": "http://1r.gha-domain.com/logistics-objects/FRA-GHA-Dock1"
+        }
+    ],
+	"https://onerecord.iata.org/ns/cargo#actionTimeType": "ACTUAL",
+	"https://onerecord.iata.org/ns/cargo#actionStartTime": "2024-06-05T15:57:00",
+	"https://onerecord.iata.org/ns/cargo#actionEndTime": "2024-06-05T15:59:00"
 }
 ```
 
-([shipment.json](./assets/shipment.json))
+**Piece**, **Shipment**, **Waybill**
 
-**Waybill**
+Generally, there are no specific requirements fot the use of the Logistics Objects of type Piece, Shipment and Waybill by the truck preAdvice use case.
 
-- The purpose of the Waybill-Object(s) here is to share the AWB Number(s) of the shipments on the truck.
- 
-```json
-{
-    "@context": {
-        "@vocab": "https://onerecord.iata.org/ns/cargo#"
-    },
-    "@id": "https://1r.example.com/logistics-objects/1a8ded38-1804-467c-a369-81a411416b7c",
-    "@type": "Waybill",
-    "arrivalLocation": {
-        "@id": "https://1r.example.com/logistics-objects/JFK"
-    },
-    "departureLocation": {
-        "@id": "https://1r.example.com/logistics-objects/FRA"
-    },
-    "shipment": {
-        "@id": "https://1r.example.com/logistics-objects/8a76ed85-959e-45d5-8c42-5fd39c08efb1"
-    },
-    "waybillNumber": "12345675",
-    "waybillPrefix": "020",
-    "waybillType": {
-        "@id": "https://onerecord.iata.org/ns/cargo#MASTER"
-    }
-}
-```
+- As ONE Record is piece-centric, most information is directly linked to pieces instead of shipment or waybill, e.g. Loading actions.
+- The purpose of the Waybill-Object(s) here is to share the AWB Number(s) of the shipments on the truck. It can be correlated via the LOs shipment and piece.
+- Shipment describes the physical side of all pieces under one contract. It doesn´t contain any specific information here.
 
-([waybill.json](./assets/waybill.json))
-
-
-### Examples
-
-This section demonstrates the previously described [implementation guidelines](#implementation-guidelines) with examples.
-
-
-#### Example 1: TruckPreAdvice for Export Acceptance
-
-...
-
-#### Example 2: TruckPreAdvice for Import Shipment Pickup
-...
 
 ## Data Sharing
 
@@ -466,9 +442,7 @@ Business terms:
 
 ## References
 
-- ...
-- ...
-- ...
+- [ONE Record Good Practice on Shipment Tracking](https://github.com/digital-cargo/good-practice-shipment-tracking/)
 
 ## Acknowledgements
 
