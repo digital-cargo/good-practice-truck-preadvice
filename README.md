@@ -3,6 +3,13 @@
 [](https://digital-cargo.org)
 [](https://creativecommons.org/licenses/by/4.0/)
 
+# Todo Hendrik
+- [ ] Properties richtig benannt
+- [ ] Inkonsistenz
+- [ ] Texte glatt ziehen
+- [ ] Inhaltliche Prüfung
+- [ ] Im Text nach "Todo Hendrik" suchen
+
 ## Abstract
 
 Today, there´s a lack of transparency for the information on road trucks in the context of cargo transportation. This is often the result of strongly distributed responsibilities and tasks between trucking company, forwarder and air cargo carrier.
@@ -12,7 +19,7 @@ The ONE Record standard is supposed to solve this problem by providing a standar
 ## Introduction
 
 In the dynamic world of logistics and cargo, shipment tracking stands as a cornerstone, ensuring visibility, predictability, and trust within the supply chain. 
-Yet, as businesses expand and systems diversify, the industry faces a challenge: the myriad of non-standardized tracking systems, each requiring unique integration and understanding. This fragmentation not only complicates operations but also escalates costs and reduces efficiency. The trucking segment for deliveries e.g. from the trucker as agent of the forwarder to the GHA as agent of the carrier is not an exception here.
+Yet, as businesses expand and systems diversify, the industry faces a challenge: the myriad of non-standardized tracking systems, each requiring unique integration and understanding. This fragmentation not only complicates operations but also escalates costs and reduces efficiency. The trucking segment for deliveries, such as from the trucker acting as the forwarder's agent to the Ground Handling Agent (GHA) representing the carrier, is no exception.
 
 Initiated and moderated by the International Air Transportation Association (IATA), in 2022, major stakeholders of the supply chain decided to aim for a renewed data sharing infrastructure for the global logistics networks by 2026.
 Enter the ONE Record standard, which aims to unify, streamline and improve shipping data across the industry. 
@@ -24,7 +31,7 @@ Moreover, the standardized approach curtails complexities tied to integration, c
 
 ### Scope
 
-This good practice details the application of the ONE Record standard specifically in the context of the TruckPreAdvice.
+This good practice details the application of the ONE Record standard specifically in the context of the TruckPreAdvice. For further good practices in different areas, see the section [Further Use Cases](#further-use-cases)
 
 **What this document covers:**
 
@@ -43,17 +50,18 @@ As the industry evolves, it is imperative for stakeholders to keep up to date on
 
 **Target audience**
 
-This document is intended for anyone interested in this topic.
+This document is intended for anyone interested in this topic. This can range from logistics professionals, supply chain managers, software developers, and other stakeholders involved in shipment tracking and data exchange within the logistics and cargo industry. It is designed to cater to both technical and business-oriented individuals interested in adopting standardized practices for efficient shipment tracking.
 
 **Geographical coverage**
 
 This TruckPreAdvice good practice is globally applicable, unhindered by regional or national distinctions. 
-With no legal or operational barriers to its adoption, the outlined solution is primed for worldwide deployment. Still local legal requirements, like Data Protection Laws, must be taken into account.
+With no legal or operational barriers to its adoption, the outlined solution is primed for worldwide deployment. Still local legal requirements, like data protection laws, must be taken into account.
 As a result, companies of any size, at any location, can take advantage of the standardized workflows and increased efficiencies created by ONE Record.
 
 ### Variants
 
 No relevant variants known.
+Todo Hendrik
 
 ## Background
 
@@ -61,13 +69,13 @@ No relevant variants known.
 
 In this use case, four parties are involved: The trucking company, the forwarder, the GHA and the carrier. As the trucker usually acts as an agent for the forwarder, and the GHA as an agent for the carrier, we will focus on the roles of trucker and GHA in the following documentation.
 
-The terms "trucker" and "trucking company" are synonym here, as the information can be provided by the trucking company (e.g. directy from the TMS, ), or by the trucker (e.g. an app using ONE Record for exchanging data). This process is very general and can cover export e.g. acceptance at GHA, import pickups at GHA, incoming Road Feed Service, Forwarder´s pick up at Shipper. 
+The terms "trucker" and "trucking company" are used synonymously here, as the information can be provided either by the trucking company (e.g., directly from the Transportation management system (TMS)) or by the trucker (e.g., through an app using ONE Record for data exchange). This process is quite general and can encompass various stages, such as export acceptance at the GHA, import pickups at the GHA, incoming Road Feed Service, and the forwarder’s pickup at the shipper.
 
 ### Business Process (pragmatic approach)
 
-To examplify the use case, the following setting was assumed:
+To exemplify the use case, the following setting was assumed:
 
-A Trucker/Trucking Company wants to preAdvice a truck for export acceptance at the GHA. In return, the trucker expects to get a ramp assignment and a QR code for each drop off for accelerated identification.
+A trucker or trucking company intends to pre-advise a truck for export acceptance at the GHA. In return, the trucker expects to receive a ramp assignment and a QR code for each drop-off to facilitate faster identification.
 
 The following business data objects are shared by the trucker:
 
@@ -84,21 +92,21 @@ Driver details
 
 - First name
 - Last name
-- Birth date
+- Date of birth
 - Mobile Phone number
 - Email address
 - Type of ID
 - ID Number
-- Place of ID Issueing
+- Place of ID Issuance
 
-Remarks: The Quick Drop-Off Airport could be removed as the drop off station is clear by the origin on the AWB.
+_Remarks_: The quick drop-off airport could be removed since the drop-off station is already indicated by the origin on the AWB.
 
 In return, the GHA will provide
 
 - A sequence of dock assignments
-- QDO-Code (Cleartext and Barcode)
+- QDO-Code (plain text and barcode)
 - QDO Groups with each
-  - Dock (Name and Geolocation (optional))
+  - Dock (name and optional geolocation)
   - Pieces to be droped of there
   - Time slot (optional)
 
@@ -112,11 +120,7 @@ and the [ONE Record core code lists ontology v0.0.3](https://onerecord.iata.org/
 
 Furthermore, it utilises the [ONE Record API specificaiton v2.0.0](https://iata-cargo.github.io/ONE-Record/).
 
-### Related Good Practices
-
-This Good practice is closely related to the [ShipmentTracking](https://github.com/digital-cargo/good-practice-shipment-tracking) and the [shipment record](https://github.com/digital-cargo/good-practice-shipment-record).
-
-### Piece-centricity and physics-orientation
+### Piece-Centricity and Physics-Orientation
 
 Today in air cargo, tracking information is typically provided at the shipment level, but the ONE Record data model follows the principle of piece-centricity as a core design principle.
 Another design principle of ONE Record is its aim to reflect the actual physical world, its objects and activities. 
@@ -144,7 +148,7 @@ sequenceDiagram
     GHA ONE Record Server->>+Trucker ONE Record Server: SUB on all "ServiceRequests"
 ```
 
-### Business Process (pragmatic approach)
+### Business Process (Pragmatic Approach)
 
 A pragmatic approach is that the trucker provides a TransportMovement to the GHA´s trucking gate and the GHA then provides TransportMovements from the trucking gate to one or more trucking docs.
 
@@ -169,9 +173,9 @@ sequenceDiagram
     GHA TMS->>+GHA ONE Record Server: Updates the TransportMovement with actual timestamps 
 ```
 
-### Business Process (using the Service-concept)
+### Business Process (Using the Service-Concept)
 
-This variant of the business process applies the Service-concept of ONE Record. The TruckPreAdvice process is using a GHA Service called "QuickDropOff". The sequence for this use case is as follows:
+This variant of the business process applies the service-concept of ONE Record. The TruckPreAdvice process is using a GHA Service called "QuickDropOff". The sequence for this use case is as follows:
 - A trucker provides a serviceRequest with the essential information: the truck and driver information plus the shipments.
 - The GHA then provides one or more options for the service. Each service option is a dock slot option a different drop-off time. For this example, we assume there´s only one option provided by the GHA.
 - If the slot fits and is to be confirmed, the trucker then requests the GHA to change the Status of the bookingOption to BOOKED.
@@ -216,8 +220,8 @@ sequenceDiagram
 
 **Class Diagam**
 
-This good practice incorporates data classes of the [ONE Record cargo ontology](https://onerecord.iata.org/ns/cargo) 
-and the [ONE Record core code lists ontology](https://onerecord.iata.org/ns/coreCodeLists).
+This good practice incorporates data classes of the [ONE Record Cargo Ontology](https://onerecord.iata.org/ns/cargo) 
+and the [ONE Record Core Code Lists Ontology](https://onerecord.iata.org/ns/coreCodeLists).
 For clarity, class inheritance and unused data properties are excluded, and only required properties and relationships are visualized in the following.
 
 The following class diagram shows the LogisticsObject data classes used and their relationships in the context of TruckPreAdvice.
@@ -230,9 +234,7 @@ As there is no standardized solution in place, a mapping with existing standards
 
 ### Implementation Guidelines
 
-This section outlines mandatory and best practice guidelines for the TruckPreAdvice use case in accordance with the ONE Record standard. 
-For every data class and property, compliance requires adherence to certain guidelines marked as MUST, while it is RECOMMENDED to follow others for best practices. 
-Additionally, to facilitate comprehension, practical data examples are included to demonstrate the implementation of these guidelines.
+This section details the mandatory and best practice guidelines for the TruckPreAdvice use case in alignment with the ONE Record standard. Compliance requires adherence to specific guidelines marked as MUST for each data class and property, while it is RECOMMENDED to follow others as best practices. To aid understanding, practical data examples are provided to illustrate the implementation of these guidelines.
 
 **Location**
 
@@ -263,6 +265,7 @@ Additionally, to facilitate comprehension, practical data examples are included 
 - TBD - The movementMilestone ?????
 - The movementTimestamp provides the arrival timestamp for this MovementTimeType.
 - One or more movementTimes can be embedded, updated movementTimes are simply appended to the previous movementTimes. (CHECK?????)
+Todo Hendrik: Was soll mit "check???" gechecked werden?
 
 ```json
 {
@@ -343,10 +346,11 @@ Additionally, to facilitate comprehension, practical data examples are included 
 
 **externalReference**
 
-- The externalReference contains the id information of the driver.
-- The Type of ID is shared in the documentType. This can be e.g. "Driver Licence", "Passport" or "ID-Card"
+- The externalReference contains the ID information of the driver.
+- The Type of ID is shared in the documentType. This can be e.g. "Driver License", "Passport" or "ID-Card"
 - The ID Number is to be shared in the documentIdentifier
 - TBC - Place of ID issueing is to be shared in the createdAtLocation (LINK??)
+Todo Hendrik
 
 ```json
 {
@@ -360,7 +364,7 @@ Additionally, to facilitate comprehension, practical data examples are included 
 
 **Loading**
 
-- to link Pieces and TransportMovement, a loading action must be created. TransportMovement and LoadingAction are linked via "onTransportMeans" in the Loading and "LoadingActions" in the TransportMovement.
+- To link Pieces and TransportMovement, a loading action must be created. TransportMovement and LoadingAction are linked via "onTransportMeans" in the Loading and "LoadingActions" in the TransportMovement.
 - For the delivery process, it is recommended to use the loading object for the previous loading of the truck, indicating the loadingType "LOADING"; Carrier / GHA then share the unloading of the truck in a new LoadingAction.
 - For a pickup, it is recommended to also use the loadingType "LOADING" and link the pieces to be loaded, but add an embedded actionTimeType "PLANNED" and an  actionStartTime with the estimated pickup-time.
 - TBC - Leeres TransportMovement hin für QPU, volles TM zurück, Abholschein.
@@ -404,7 +408,7 @@ Generally, there are no specific requirements fot the use of the Logistics Objec
 
 ## Data Sharing
 
-In terms of data exchange, there are no specific requirements for this use case going beyong what e.g. sharing the shipment record requires.
+In terms of data exchange, this use case does not impose any additional requirements beyond those needed for sharing the shipment record.
 
 ### Required API implementation
 
@@ -417,6 +421,7 @@ The subscriber's MUST implement a `/notifications` endpoint to receive Notificat
 
 ## Required functions
 !!! TO BE UPDATED
+Todo Hendrik
 The following technical features are required on the data provider side:
 
 - Implemented basic requests: GET, POST
@@ -428,9 +433,9 @@ On the data consumer side, even less functions are required for pure data consum
 - Making basic GET request
 - Retrieving data from linked data sources
 
-single ONE Record server / multiple ONE Record clients
+Single ONE Record server / multiple ONE Record clients
 
-> For each use case what is required: server, client, endpoints
+> For each use case, the following is required: client, server, and endpoints
 
 ## Glossary
 
@@ -438,11 +443,18 @@ see [digita-cargo/glossary](https://github.com/digital-cargo/glossary)
 
 Business terms:
 
-- "Dock": a dock in this context is the physical location, where a truck is unloaded. Often, the term "ramp" is used. We intentionally used "dock", to aviod confusion with the ramp on the apron.
+- Dock: The physical location, where a truck is unloaded. Often, the term "ramp" is used. We intentionally used "dock", to aviod confusion with the ramp on the apron.
+- GHA: Ground Handling Agent / airline representative at airline Station locations (in general).
+- TMS: Transportation management system
 
 ## References
 
 - [ONE Record Good Practice on Shipment Tracking](https://github.com/digital-cargo/good-practice-shipment-tracking/)
+
+## Further Use Cases
+Below is a list of further best practices and use cases:
+- [Good Practice: Shipment Record](https://github.com/digital-cargo/good-practice-shipment-record)
+- [Good Practice: Shipment Tracking](https://github.com/digital-cargo/good-practice-shipment-tracking)
 
 ## Acknowledgements
 
@@ -483,5 +495,6 @@ _(sorted alphabetically)_
 - [Daniel A. Döppner](https://github.com/ddoeppner), Lufthansa Cargo
 - [Ingo Zeschky](https://github.com/ChrisKranich), Lufthansa Cargo
 - [Philipp Billion](https://github.com/DrPhilippBillion), Lufthansa Cargo
+- [Hendrik Gruber](https://github.com/HendrikLH), Lufthansa Industry Solutions
 
 _(sorted alphabetically)_
