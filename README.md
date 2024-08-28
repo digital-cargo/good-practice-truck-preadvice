@@ -4,10 +4,9 @@
 [](https://creativecommons.org/licenses/by/4.0/)
 
 # Todo Hendrik
-- [ ] Properties richtig benannt
-- [ ] Inkonsistenz
-- [ ] Texte glatt ziehen
-- [ ] Inhaltliche Prüfung
+- [x] Texte glatt ziehen
+- [x] Prüfung aller Grafiken
+- [ ] Properties richtig benannt
 - [ ] Im Text nach "Todo Hendrik" suchen
 
 ## Abstract
@@ -132,7 +131,7 @@ For example, when every piece in a shipment has been loaded and the aircraft dep
 
 The following sequence diagram shows in which sequence data object need to be created to fulfill the process.
 
-As a one-time preparatory, the relevant locations must be created and subscribed on:
+As a one-time preparatory, the relevant locations must be created and subscribed to:
 
 ```mermaid
 sequenceDiagram
@@ -141,10 +140,10 @@ sequenceDiagram
     participant GHA ONE Record Server
     participant GHA TMS
     autonumber
-    Trucker TMS->>+Trucker ONE Record Server: Creat location "FRA GHA Trucking Gate"
+    Trucker TMS->>+Trucker ONE Record Server: Create location "FRA GHA Trucking Gate"
     GHA ONE Record Server->>+Trucker ONE Record Server: SUB on location "FRA GHA Trucking Gate"
-    GHA TMS->>+GHA ONE Record Server: Creat location "FRA GHA Truck Dock 1"
-    GHA TMS->>+GHA ONE Record Server: Creat location "FRA GHA Truck Dock 2"
+    GHA TMS->>+GHA ONE Record Server: Create location "FRA GHA Truck Dock 1"
+    GHA TMS->>+GHA ONE Record Server: Create location "FRA GHA Truck Dock 2"
     GHA ONE Record Server->>+Trucker ONE Record Server: SUB on all "ServiceRequests"
 ```
 
@@ -159,18 +158,18 @@ sequenceDiagram
     participant GHA ONE Record Server
     participant GHA TMS
     autonumber
-    Trucker TMS->>+Trucker ONE Record Server: CREATE the Pieces, Shipment, Waybill, TransportMeans (Truck), <br/> TransportOperator (Driver), and transportMovement to the destination<br/> location "FRA GHA Trucking Gate"
-    Trucker TMS->>+Trucker ONE Record Server: CREATE the proposedTransportMovement to the destination<br/> location "FRA GHA Trucking Gate" and link them 
+    Trucker TMS->>+Trucker ONE Record Server: Create the Pieces, Shipment, Waybill, TransportMeans (Truck), <br/> TransportOperator (Driver), and transportMovement to the destination<br/> location "FRA GHA Trucking Gate"
+    Trucker TMS->>+Trucker ONE Record Server: Create the proposedTransportMovement to the destination<br/> location "FRA GHA Trucking Gate" and link them 
     Trucker ONE Record Server->>+GHA ONE Record Server: Notification for the creation of the transportMovement <br/> with the location "FRA GHA Trucking Gate"
     GHA ONE Record Server->>+ Trucker ONE Record Server: GET ServiceRequest, proposedTransportMovement, transportMeans, <br/>transportOperator, Pieces, Shipment and Waybill
     GHA ONE Record Server->>+GHA TMS: Retrieves assembled QDO-List 
-    GHA TMS->>+GHA ONE Record Server: CREATE QuickDropOff list as external reference incl. barcode
-    GHA TMS->>+GHA ONE Record Server: CREATE TransportMovement 1 (Gate-Ramp1) and 2 (Ramp1-Ramp2)<br/> incl. externalRefence and trigger patch into TransportMeans from Trucker
-    GHA ONE Record Server->>+Trucker ONE Record Server: CR the TransportMovements into the Pieces 
-    Trucker ONE Record Server->>+ Trucker TMS: Retrieves Slot offer
+    GHA TMS->>+GHA ONE Record Server: Create QuickDropOff list as external reference incl. barcode
+    GHA TMS->>+GHA ONE Record Server: Create TransportMovement 1 (Gate-Ramp1) and 2 (Ramp1-Ramp2)<br/> incl. externalRefence and trigger patch into TransportMeans from Trucker
+    GHA ONE Record Server->>+Trucker ONE Record Server: Change Request the TransportMovements into the Pieces 
+    Trucker ONE Record Server->>+ Trucker TMS: Retrieve Slot offer
     Trucker TMS ->>+ Trucker ONE Record Server: Triggers accepting the slot
-    Trucker ONE Record Server ->>+ GHA ONE Record Server: Executes CR to link the additional TransportMovements
-    GHA TMS->>+GHA ONE Record Server: Updates the TransportMovement with actual timestamps 
+    Trucker ONE Record Server ->>+ GHA ONE Record Server: Execute Change Request to link the additional TransportMovements
+    GHA TMS->>+GHA ONE Record Server: Update the TransportMovement with actual timestamps 
 ```
 
 ### Business Process (Using the Service-Concept)
@@ -195,19 +194,19 @@ sequenceDiagram
     participant GHA ONE Record Server
     participant GHA TMS
     autonumber
-    Trucker TMS->>+Trucker ONE Record Server: CREATE the Pieces, Shipment, Waybill, TransportMeans (Truck), <br/> TransportOperator (Driver), and transportMovement to the destination<br/> location "FRA GHA Trucking Gate"
-    Trucker TMS->>+Trucker ONE Record Server: CREATE the proposedTransportMovement to the destination<br/> location "FRA GHA Trucking Gate", ServiceRequest and link them 
+    Trucker TMS->>+Trucker ONE Record Server: Create the Pieces, Shipment, Waybill, TransportMeans (Truck), <br/> TransportOperator (Driver), and transportMovement to the destination<br/> location "FRA GHA Trucking Gate"
+    Trucker TMS->>+Trucker ONE Record Server: Create the proposedTransportMovement to the destination<br/> location "FRA GHA Trucking Gate", ServiceRequest and link them 
     Trucker ONE Record Server->>+GHA ONE Record Server: Notification for the creation of ServiceRequest and the linking of an <br/>transportMovement into the  location "FRA GHA Trucking Gate"
     GHA ONE Record Server->>+ Trucker ONE Record Server: GET ServiceRequest, proposedTransportMovement, transportMeans, <br/>transportOperator, Pieces, Shipment and Waybill
     GHA ONE Record Server->>+GHA TMS: Retrieves ServiceRequest incl. linked data 
-    GHA TMS->>+GHA ONE Record Server: CREATE proposedTransportMovement 1 and 2 and <br/> HandlingServiceOption with status BOOKABLE
+    GHA TMS->>+GHA ONE Record Server: Create proposedTransportMovement 1 and 2 and <br/> HandlingServiceOption with status BOOKABLE
     GHA ONE Record Server->>+Trucker ONE Record Server: PATCH the HandlingServiceOption into the ServiceRequest
     Trucker ONE Record Server->>+ Trucker TMS: Retrieves option and evaluates
-    Trucker TMS ->>+ Trucker ONE Record Server: Triggers accepting the option
+    Trucker TMS ->>+ Trucker ONE Record Server: Trigger accepting the option
     Trucker ONE Record Server ->>+ GHA ONE Record Server: PATCH for statusBookingOption=BOOKED in HandlingServiceOption 
-    GHA ONE Record Server->>+GHA TMS: Triggers internal service status update
+    GHA ONE Record Server->>+GHA TMS: Trigger internal service status update
     GHA TMS->>+GHA ONE Record Server: Implement Requested PATCH HandlingServiceOption 
-    GHA TMS->>+GHA ONE Record Server: CREATE handlingService, linked transportMovements<br/> (from gate to dock 1 and dock 1 to dock 2)<br/> the unloading actions and scheduled movementTimes
+    GHA TMS->>+GHA ONE Record Server: Create handlingService, linked transportMovements<br/> (from gate to dock 1 and dock 1 to dock 2)<br/> the unloading actions and scheduled movementTimes
     Trucker TMS ->>+ Trucker ONE Record Server: Updates MovementTimes in TransportMovements with actuals
     Trucker ONE Record Server ->>+ GHA ONE Record Server: PATCH actual MovementTimes into transportMovements 
 ```
