@@ -6,7 +6,7 @@
 # Todo Hendrik
 - [x] Texte glatt ziehen
 - [x] Prüfung aller Grafiken
-- [ ] Properties richtig benannt
+- [x] Properties richtig benannt
 - [ ] Im Text nach "Todo Hendrik" suchen
 
 ## Abstract
@@ -60,7 +60,6 @@ As a result, companies of any size, at any location, can take advantage of the s
 ### Variants
 
 No relevant variants known.
-Todo Hendrik
 
 ## Background
 
@@ -78,7 +77,7 @@ A trucker or trucking company intends to pre-advise a truck for export acceptanc
 
 The following business data objects are shared by the trucker:
 
-General Details
+**General Details**
 
 - Quick Drop-Off Airport
 - Type of vehicle
@@ -87,7 +86,7 @@ General Details
 - STA and/or ETA
 - Piece(s) loaded
 
-Driver details
+**Driver details**
 
 - First name
 - Last name
@@ -185,7 +184,7 @@ This variant of the business process applies the service-concept of ONE Record. 
 
 The specific sequence of actions per TruckPreAdvice then is as follows:
 
-Step 1: Trucker to provide the shipment data and request the QDO-Service at the GHA
+Step 1: The trucker is to provide the shipment data and request the QDO-Service at the GHA
 
 ```mermaid
 sequenceDiagram
@@ -212,7 +211,6 @@ sequenceDiagram
 ```
 
 
-
 ## Data Sharing
 
 ### Data Model
@@ -229,7 +227,7 @@ The following class diagram shows the LogisticsObject data classes used and thei
 
 ### Data Mapping
 
-As there is no standardized solution in place, a mapping with existing standards is not done.
+As there is no standardized solution in place, a mapping with existing standards does not yet exist.
 
 ### Implementation Guidelines
 
@@ -254,17 +252,15 @@ This section details the mandatory and best practice guidelines for the TruckPre
 
 **TransportMovement**
 
-- To indicate an incoming truck with shipments to the carrier/GHA, the forwarder has to create a TransportMovement.
-- The [arrivalLocation](https://onerecord.iata.org/ns/cargo#arrivalLocation) must link to the carrier´s / GHA´s gate.
-- Carrier/GHA have to subscribe on that location, if the location is provided by the trucker, so they get notified whenever a truck is planned for this destination.
+- To indicate an incoming truck with shipments to the carrier / GHA, the forwarder has to create a TransportMovement with an [arrivalLocation](https://onerecord.iata.org/ns/cargo#arrivalLocation) that MUST link to the carrier´s / GHA´s gate.
+- If the location is provided by the trucker, then the carrier / GHA has to subscribe to the location so they get notified whenever a truck is planned to arrive at the specified location.
 - The [transportIdentifier](https://onerecord.iata.org/ns/cargo#transportIdentifier) can be created according to the requirements and conventions of the trucking company and does not have to follow use case specific rules.
-- To share the scheduled and/or estimated time of arrival at the carrier / GHA, at least one MovementTimes object must be embedded in the transportMovement.
+- To share the scheduled and / or estimated time of arrival at the carrier / GHA, at least one MovementTimes object must be embedded in the transportMovement.
 - The direction for the estimated arrival must be "INBOUND". As this is an essential part of the use case, the use of this data field is mandatory for this use case.
 - The movementTimeType must be set according to the nature of the MovementTime, "ESTIMATED" or "SCHEDULED"
-- TBD - The movementMilestone ?????
+- It has not yet been decided on how the [movementMilestone](https://onerecord.iata.org/ns/cargo/index-en.html#movementMilestone) should be used.
 - The movementTimestamp provides the arrival timestamp for this MovementTimeType.
-- One or more movementTimes can be embedded, updated movementTimes are simply appended to the previous movementTimes. (CHECK?????)
-Todo Hendrik: Was soll mit "check???" gechecked werden?
+- One or more movementTimes can be embedded. Updated movementTimes are simply appended to the previous movementTimes. Todo Hendrik Check if appended or replaced
 
 ```json
 {
@@ -324,8 +320,8 @@ Todo Hendrik: Was soll mit "check???" gechecked werden?
 
 - The Person contains information on the driver.
 - First and last name are mandatory for this use case.
-- The field "document" is of type externalReference contains links to the ID document of the driver.
-- The date of birth should be shared as well as a mobile phone number and emailaddress in the embedded contactDetails.
+- The field "document" is of type externalReference and contains links to the ID document of the driver.
+- The date of birth should be shared as well as a mobile phone number and email address in the embedded contactDetails.
 
 ```json
 {
@@ -346,10 +342,9 @@ Todo Hendrik: Was soll mit "check???" gechecked werden?
 **externalReference**
 
 - The externalReference contains the ID information of the driver.
-- The Type of ID is shared in the documentType. This can be e.g. "Driver License", "Passport" or "ID-Card"
+- The type of ID is shared in the documentType. This can be e.g. "Driver License", "Passport" or "ID-Card"
 - The ID Number is to be shared in the documentIdentifier
-- TBC - Place of ID issueing is to be shared in the createdAtLocation (LINK??)
-Todo Hendrik
+- TBC: Place of ID issueing is to be shared in the [createdAtLocation](https://onerecord.iata.org/ns/cargo/index-en.html#createdAtLocation).
 
 ```json
 {
@@ -366,7 +361,7 @@ Todo Hendrik
 - To link Pieces and TransportMovement, a loading action must be created. TransportMovement and LoadingAction are linked via "onTransportMeans" in the Loading and "LoadingActions" in the TransportMovement.
 - For the delivery process, it is recommended to use the loading object for the previous loading of the truck, indicating the loadingType "LOADING"; Carrier / GHA then share the unloading of the truck in a new LoadingAction.
 - For a pickup, it is recommended to also use the loadingType "LOADING" and link the pieces to be loaded, but add an embedded actionTimeType "PLANNED" and an  actionStartTime with the estimated pickup-time.
-- TBC - Leeres TransportMovement hin für QPU, volles TM zurück, Abholschein.
+- TBC: Empty Transport Movement out for QPU, full TM back, pick-up receipt.
 - This can be a skeleton, or provide information beyond linking a TransportMovmenet with the Pieces that can be shared.
 - As a minimum requirement, it must link the TransportMovement in the "servedActivity" and the loaded pieces in the "loadedPieces" data field.
 
@@ -398,11 +393,11 @@ Todo Hendrik
 
 **Piece**, **Shipment**, **Waybill**
 
-Generally, there are no specific requirements fot the use of the Logistics Objects of type Piece, Shipment and Waybill by the truck preAdvice use case.
+Generally, there are no specific requirements for the use of the Logistics Objects of type Piece, Shipment and Waybill by the truck preAdvice use case.
 
-- As ONE Record is piece-centric, most information is directly linked to pieces instead of shipment or waybill, e.g. Loading actions.
-- The purpose of the Waybill-Object(s) here is to share the AWB Number(s) of the shipments on the truck. It can be correlated via the LOs shipment and piece.
-- Shipment describes the physical side of all pieces under one contract. It doesn´t contain any specific information here.
+- As ONE Record is piece-centric, most information is directly linked to pieces instead of shipments or waybills, e.g. loading actions.
+- The purpose of the Waybill Object(s) here is to share the AWB number(s) of the shipments on the truck. It can be correlated via the LOs shipment and piece.
+- Shipment describes the physical side of all pieces under one contract. It does not contain any specific information here.
 
 
 ## Data Sharing
@@ -418,27 +413,25 @@ The publisher's ONE Record API MUST implement the
 
 The subscriber's MUST implement a `/notifications` endpoint to receive Notifications.
 
-## Required functions
-!!! TO BE UPDATED
-Todo Hendrik
+## Required Functionality for the Providers and Consumers
 The following technical features are required on the data provider side:
 
-- Implemented basic requests: GET, POST
-- Generating and managing links for linked data
-- Support publish and subscribe
+- Ability to execute basic requests: GET, POST
+- Ability to generate and manage links for linked data
+- Ability to support the publish and subscribe functionality
 
-On the data consumer side, even less functions are required for pure data consumption from the open tracking API:
+On the data consumer side, even less functionality is required for pure data consumption from the open tracking API:
 
-- Making basic GET request
-- Retrieving data from linked data sources
+- Ability to make GET requests
+- Ability to retrieve data from linked sources
 
 Single ONE Record server / multiple ONE Record clients
 
-> For each use case, the following is required: client, server, and endpoints
+> For each use case, the following is required: a client, a server, and several endpoints
 
 ## Glossary
 
-see [digita-cargo/glossary](https://github.com/digital-cargo/glossary)
+See [digita-cargo/glossary](https://github.com/digital-cargo/glossary)
 
 Business terms:
 
