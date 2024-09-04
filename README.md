@@ -3,11 +3,6 @@
 [](https://digital-cargo.org)
 [](https://creativecommons.org/licenses/by/4.0/)
 
-# Todo Hendrik
-- [x] Texte glatt ziehen
-- [x] Prüfung aller Grafiken
-- [x] Properties richtig benannt
-- [ ] Im Text nach "Todo Hendrik" suchen
 
 ## Abstract
 
@@ -260,7 +255,7 @@ This section details the mandatory and best practice guidelines for the TruckPre
 - The movementTimeType must be set according to the nature of the MovementTime, "ESTIMATED" or "SCHEDULED"
 - It has not yet been decided on how the [movementMilestone](https://onerecord.iata.org/ns/cargo/index-en.html#movementMilestone) should be used.
 - The movementTimestamp provides the arrival timestamp for this MovementTimeType.
-- One or more movementTimes can be embedded. Updated movementTimes are simply appended to the previous movementTimes. Todo Hendrik Check if appended or replaced
+- One or more movementTimes can be embedded. Updated movementTimes are simply appended to or replace the previous movementTimes.
 
 ```json
 {
