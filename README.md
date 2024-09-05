@@ -175,11 +175,7 @@ This variant of the business process applies the service-concept of ONE Record. 
 - The GHA then provides the transportMovements for the different docs and the different pieces according to their nature (e.g. PER, COOL, DGR).
 - During the execution of this sequence, the "ACTUAL" timestamps are added to the transportMovement.
 
-
-
-The specific sequence of actions per TruckPreAdvice then is as follows:
-
-Step 1: The trucker is to provide the shipment data and request the QDO-Service at the GHA
+The specific sequence of actions per TruckPreAdvice is as follows:
 
 ```mermaid
 sequenceDiagram
@@ -205,6 +201,7 @@ sequenceDiagram
     Trucker ONE Record Server ->>+ GHA ONE Record Server: PATCH actual MovementTimes into transportMovements 
 ```
 
+As this implementation is quite complex, this documentation follows the pragmatic approach as described above.
 
 ## Data Sharing
 
